@@ -4,8 +4,8 @@ with open('README.md', 'r') as f:
     long_description = f.read()
 setup(
     name='read-only-attributes',         # How you named your package folder (MyLib)
-    packages=['read-only-attributes'],   # Chose the same as "name"
-    version='1.1',      # Start with a small number and increase it with every change you make
+    packages=['roa'],   # Chose the same as "name"
+    version='1.2',      # Start with a small number and increase it with every change you make
     license='MIT',        # Chose a license from here: https://help.github.com/articles/licensing-a-repository
     description='Makes read only attributes for a Python class',   # Give a short description about your library
     long_description=long_description,
