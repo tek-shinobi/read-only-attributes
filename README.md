@@ -1,5 +1,7 @@
-Read Only Attributes
---------------------------------------
+# Read Only Attributes
+[![Build Status](https://travis-ci.org/tek-shinobi/read-only-attributes.svg?branch=master)](https://travis-ci.org/tek-shinobi/read-only-attributes)
+[![codecov](https://codecov.io/gh/tek-shinobi/read-only-attributes/branch/master/graph/badge.svg)](https://codecov.io/gh/tek-shinobi/read-only-attributes)
+[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 
 Info:
 -------------------
