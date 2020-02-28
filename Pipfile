@@ -13,6 +13,7 @@ pytest-cov = "*"
 codecov = "*"
 
 [packages]
+check-manifest = "*"
 
 [requires]
 python_version = "3.6"
