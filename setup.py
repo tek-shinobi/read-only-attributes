@@ -10,9 +10,9 @@ setup(
     description='Makes read only attributes for a Python class',   # Give a short description about your library
     long_description=long_description,
     long_description_content_type='text/markdown',
-    author='tek shinobi',                   # Type in your name
+    author='tek.shinobi',                   # Type in your name
     author_email='tek.shinobi.ninja@gmail.com',      # Type in your E-Mail
-    url='https://github.com/tek-shinobi/tek-roa.git',   # Provide either the link to your github or to your website
+    url='https://github.com/tek-shinobi/read-only-attributes',   # Provide either the link to your github or to your website
     keywords=['read', 'only', 'attributes', 'property'],   # Keywords that define your package best
     install_requires=[            # I get to this in a second
     ],
