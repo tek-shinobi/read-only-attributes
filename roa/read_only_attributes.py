@@ -1,3 +1,6 @@
+from typing import Iterable
+
+
 def _make_read_only_property(key):
     priv_key = "__" + key
 
@@ -25,11 +28,26 @@ def _make_read_only_static_property(key, value):
     return property(key_getter, key_setter)
 
 
+def _normalize_ro_attrs(arg):
+    if isinstance(arg, str):
+        return [arg]
+    elif isinstance(arg, Iterable):
+        return [*arg]
+    else:
+        raise TypeError("Invalid ro_attrs: {}".format(arg))
+
+
 class ReadOnlyType(type):
-    def __new__(cls, clsname, bases, namespace, ro_attrs):
-        if isinstance(ro_attrs, str):  # Prevent ro_attrs=('x') pitfall
-            ro_attrs = (ro_attrs,)
+    def __new__(cls, clsname, bases, namespace, ro_attrs=()):
         namespace = dict(namespace)
+        ro_attrs = [
+            *_normalize_ro_attrs(ro_attrs),
+            *_normalize_ro_attrs(namespace.pop("__ro_attrs__", [])),
+        ]
+        if not ro_attrs:
+            raise RuntimeError(
+                "No read only attributes defined! Please pass ro_attrs=(...)"
+            )
         dynamic_ro_attrs = []
         for key in ro_attrs:
             if key in namespace:

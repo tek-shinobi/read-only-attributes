@@ -1,4 +1,5 @@
 import pytest
+
 from roa import ReadOnlyType
 
 
@@ -42,3 +43,24 @@ def test_attribute_mutable():
     assert mc.y == 2
     mc.y = 3
     assert mc.y == 3
+
+
+def test_invalid_class():
+    with pytest.raises(RuntimeError):
+
+        class MyClass(metaclass=ReadOnlyType):
+            pass
+
+
+@pytest.mark.parametrize("ro_attrs", ["val", ("val",), ["val"]])
+def test_arg_pass_methods(ro_attrs):
+    class MyClass(metaclass=ReadOnlyType):
+        __ro_attrs__ = ro_attrs
+
+        def __init__(self):
+            self.val = "v1"
+
+    mc = MyClass()
+    assert mc.val == "v1"
+    with pytest.raises(AttributeError):
+        mc.val = "v2"

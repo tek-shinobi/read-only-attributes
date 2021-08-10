@@ -74,3 +74,18 @@ my_class.z = 'z2'
 That's it. There us no need to use `@property`.  
 'w', 'x', and 'y' are now readonly attributes. If we try to change them, `AttributeError` exception will be raised.  
 Since 'z' is not listed in `ro_attrs`, `self.z` is a mutable instance attribute.
+
+Alternatively, you can also define it as follows:
+
+```python
+from roa import ReadOnlyType
+
+class MyClass(metaclass=ReadOnlyType):
+    __ro_attrs__ = ('w', 'x', 'y')
+
+    w = 'w1'
+    def __init__(self, x, y, z):
+        self.x = x
+        self.y = y
+        self.z = z
+```
