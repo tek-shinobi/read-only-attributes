@@ -37,36 +37,40 @@ Like as below
 The above can be written like so which is much less verbose and lot more explicit:
 
 ```
-@read_only_attributes('x','y','z','w')
-class MyClass:
+class MyClass(metaclass=ReadOnlyType, ro_attrs=('x', 'y', 'z', 'w')):
     def __init__(self, x, y, z, w):
-        self.x = x 
-        self.y = y 
-        self.z = z 
-        self.w = w 
+        self.x = x
+        self.y = y
+        self.z = z
+        self.w = w
 ```
 
-Once the instance attributes are assigned in the __\__init____, they cannot be changed. Trying to change them will raise an `AttributeError`.
+Once the instance attributes are assigned for the first time in the __\__init____, they cannot be changed. Trying to change them will raise an `AttributeError`.
 
 Installation:
 --------------
-pipenv install read-only-properties
+pipenv install read-only-attributes
 
 Usage:
 ------
 
-import class decorator @read_only_attributes and use like so:
+import metaclass `ReadOnlyType` and use like so:
 
 ```
-from roa import read_only_attributes
+from roa import ReadOnlyType
 
-@read_only_attributes('x', 'y')
-class MyClass:
+class MyClass(metaclass=ReadOnlyType, ro_attrs=('w', 'x', 'y')):
+    w = 'w1'
     def __init__(self, x, y, z):
         self.x = x
         self.y = y
         self.z = z
+
+my_class = MyClass('x1', 'y1', 'z1')
+print(my_class.w, my_class.x, my_class.y, my_class.z)
+my_class.z = 'z2'
+# my_class.x = 'x2'  # AttributeError!
 ```
 That's it. There us no need to use `@property`.  
-'x' and 'y' are now readonly attributes. If we try to change them, `AttributeError` exception will be raised.  
-Since 'z' is not in decorator argument list, `self.z` is a mutable instance attribute.
+'w', 'x', and 'y' are now readonly attributes. If we try to change them, `AttributeError` exception will be raised.  
+Since 'z' is not listed in `ro_attrs`, `self.z` is a mutable instance attribute.

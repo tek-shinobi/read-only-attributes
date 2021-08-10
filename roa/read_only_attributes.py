@@ -1,23 +1,50 @@
-def factory(*attributes):
-    """Create read-only-attributes"""
+def _make_read_only_property(key):
+    priv_key = "__" + key
 
-    def read_only_attributes_wrapper(cls):
-        class ReadOnlyAttributesClass(cls):
-            """Modified class with read only attributes"""
+    def key_getter(self):
+        return getattr(self, priv_key)
 
-            def __setattr__(self, name, value):
-                """https://python-reference.readthedocs.io/en/latest/docs/dunderattr/setattr.html"""
-                if name not in attributes:
-                    pass
-                elif name not in self.__dict__:
-                    pass
-                else:
-                    raise AttributeError("Attribute {} is readonly".format(name))
-                super().__setattr__(name, value)
+    def key_setter(self, value):
+        if priv_key in vars(self):
+            raise AttributeError(
+                'Attribute "{}" is read only and has '
+                "already been assigned.".format(key)
+            )
+        setattr(self, priv_key, value)
 
-        return ReadOnlyAttributesClass
-
-    return read_only_attributes_wrapper
+    return property(key_getter, key_setter)
 
 
-read_only_attributes = factory
+def _make_read_only_static_property(key, value):
+    def key_getter(self):
+        return value
+
+    def key_setter(self, value):
+        raise AttributeError('Attribute "{}" is read only.'.format(key))
+
+    return property(key_getter, key_setter)
+
+
+class ReadOnlyType(type):
+    def __new__(cls, clsname, bases, namespace, ro_attrs):
+        if isinstance(ro_attrs, str):  # Prevent ro_attrs=('x') pitfall
+            ro_attrs = (ro_attrs,)
+        namespace = dict(namespace)
+        dynamic_ro_attrs = []
+        for key in ro_attrs:
+            if key in namespace:
+                namespace[key] = _make_read_only_static_property(key, namespace[key])
+            else:
+                namespace[key] = _make_read_only_property(key)
+                dynamic_ro_attrs += [key]
+        namespace["__dynamic_ro_attrs__"] = dynamic_ro_attrs
+        return super().__new__(cls, clsname, bases, namespace)
+
+    def __call__(cls, *args, **kwargs):
+        obj = type.__call__(cls, *args, **kwargs)
+        for key in obj.__dynamic_ro_attrs__:
+            if "__" + key not in vars(obj):
+                raise RuntimeError(
+                    'Read only attribute "{}" not set in __init__!'.format(key)
+                )
+        return obj
