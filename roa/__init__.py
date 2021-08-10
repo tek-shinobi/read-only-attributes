@@ -1,1 +1,1 @@
-from .read_only_attributes import read_only_attributes
+from .read_only_attributes import ReadOnlyType
